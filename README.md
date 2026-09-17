@@ -27,3 +27,15 @@ npm run build
 Set the database and mail values in `.env`. The seeded administrator uses `ADMIN_EMAIL` and `ADMIN_PASSWORD`.
 
 The admin panel is available at `/`. Create an item, upload a `.glb` model, enable **Visible on public gallery**, and open `/models` to share it.
+
+### Upload size
+
+The application accepts GLB files up to 100 MB. The web PHP configuration is provided in `public/.user.ini` with a 128 MB file limit and a 150 MB POST limit.
+
+When running the local server, use the project launcher so the limits are applied to the PHP process that receives the upload:
+
+```bash
+composer run serve
+```
+
+After changing PHP-FPM or Apache configuration, restart that service before uploading larger files.

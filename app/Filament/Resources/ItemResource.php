@@ -43,7 +43,7 @@ class ItemResource extends Resource
                 TextInput::make('category')->label(__('Category'))->maxLength(80)->placeholder('e.g. Furniture, Product, Architecture'),
                 TagsInput::make('tags')->label(__('Tags'))->separator(',')->placeholder('Add searchable tags'),
                 FileUpload::make('image_path')->label(__('Cover image'))->image()->disk('public')->directory('items/images')->imageEditor()->maxSize(10240),
-                FileUpload::make('model_path')->label(__('3D model (GLB)'))->acceptedFileTypes(['model/gltf-binary', 'application/octet-stream'])->disk('public')->directory('items/models')->required()->rules(['file', 'mimes:glb', 'max:51200'])->maxSize(51200)->helperText(__('Upload a .glb file. Maximum size: 50 MB. The model is rendered in the preview and public viewer.')),
+                FileUpload::make('model_path')->label(__('3D model (GLB)'))->acceptedFileTypes(['model/gltf-binary', 'application/octet-stream', 'application/gltf-binary'])->disk('public')->directory('items/models')->required()->rules(['file', 'extensions:glb', 'max:102400'])->maxSize(102400)->helperText(__('Upload a .glb file. Maximum size: 100 MB. The model is rendered in the preview and public viewer.')),
                 Toggle::make('is_published')->label(__('Visible on public gallery'))->default(false),
                 Toggle::make('is_featured')->label(__('Featured item'))->helperText(__('Featured items appear first in the public gallery.')),
             ])->columns(2),

@@ -17,8 +17,8 @@ class ModelValidationService
         }
 
         $size = Storage::disk('public')->size($path);
-        if ($size > 50 * 1024 * 1024) {
-            $messages[] = 'The GLB file exceeds the 50 MB upload limit.';
+        if ($size > 100 * 1024 * 1024) {
+            $messages[] = 'The GLB file exceeds the 100 MB upload limit.';
         }
 
         $stream = Storage::disk('public')->readStream($path);
