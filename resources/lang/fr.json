@@ -1,0 +1,86 @@
+{
+    "English": "Anglais",
+    "Français": "Français",
+    "Language": "Langue",
+    "Default language": "Langue par défaut",
+    "Use system default": "Utiliser la langue par défaut du système",
+    "This preference applies only to your account.": "Cette préférence s'applique uniquement à votre compte.",
+    "System Settings": "Paramètres système",
+    "Administration": "Administration",
+    "Users": "Utilisateurs",
+    "User": "Utilisateur",
+    "Roles": "Rôles",
+    "Profile Picture": "Photo de profil",
+    "Personal Information": "Informations personnelles",
+    "First name": "Prénom",
+    "Last name": "Nom",
+    "Email": "E-mail",
+    "Password": "Mot de passe",
+    "Confirm Password": "Confirmer le mot de passe",
+    "Email verified": "E-mail vérifié",
+    "Not verified": "Non vérifié",
+    "Joined": "Inscrit le",
+    "General": "Général",
+    "Application": "Application",
+    "Application Name": "Nom de l'application",
+    "Tagline": "Slogan",
+    "Appearance": "Apparence",
+    "Color Theme": "Thème de couleur",
+    "Branding": "Image de marque",
+    "Security": "Sécurité",
+    "Two-Factor Authentication": "Authentification à deux facteurs",
+    "Items": "Articles",
+    "Item": "Article",
+    "Create Item": "Créer un article",
+    "Edit Item": "Modifier l'article",
+    "Description": "Description",
+    "Category": "Catégorie",
+    "Tags": "Étiquettes",
+    "Published": "Publié",
+    "Featured": "Mis en avant",
+    "Preview": "Aperçu",
+    "Save": "Enregistrer",
+    "Cancel": "Annuler",
+    "Delete": "Supprimer",
+    "Search": "Rechercher",
+    "No results": "Aucun résultat",
+    "Textures": "Textures",
+    "Texture": "Texture",
+    "Texture name": "Nom de la texture",
+    "Apply to model": "Appliquer au modèle",
+    "All public models": "Tous les modèles publics",
+    "Leave empty to make this texture available on every model.": "Laissez vide pour rendre cette texture disponible sur tous les modèles.",
+    "Texture image": "Image de texture",
+    "Upload a seamless JPG, PNG, or WebP image.": "Téléversez une image JPG, PNG ou WebP sans raccord.",
+    "Model": "Modèle",
+    "Materials": "Matériaux",
+    "Select a model part first": "Sélectionnez d'abord une partie du modèle"
+    ,"Hotspots": "Points d'intérêt"
+    ,"Hotspot": "Point d'intérêt"
+    ,"X position": "Position X"
+    ,"Y position": "Position Y"
+    ,"Z position": "Position Z"
+    ,"Display order": "Ordre d'affichage"
+    ,"Normalized model coordinate, usually between -1 and 1.": "Coordonnée normalisée du modèle, généralement entre -1 et 1."
+    ,"Variants": "Variantes"
+    ,"Variant": "Variante"
+    ,"Variant name": "Nom de la variante"
+    ,"SKU": "SKU"
+    ,"Default variant": "Variante par défaut"
+    ,"Default": "Par défaut"
+    ,"Appearance preset JSON": "JSON du préréglage d'apparence"
+    ,"Optional JSON mapping mesh indexes to colors/textures. Example: {\"parts\":{\"0\":{\"color\":\"#111827\"}}}": "JSON facultatif associant les maillages aux couleurs et textures. Exemple : {\"parts\":{\"0\":{\"color\":\"#111827\"}}}"
+    ,"Views": "Vues"
+    ,"Model check": "Vérification du modèle"
+    ,"Analytics": "Analytique"
+    ,"Public model activity for the selected period.": "Activité publique des modèles pour la période sélectionnée."
+    ,"Model views": "Vues des modèles"
+    ,"Unique visitors": "Visiteurs uniques"
+    ,"Saved configurations": "Configurations enregistrées"
+    ,"Quote requests": "Demandes de devis"
+    ,"Top models": "Modèles les plus consultés"
+    ,"Activity breakdown": "Répartition de l'activité"
+    ,"No model activity yet.": "Aucune activité de modèle pour le moment."
+    ,"No activity yet.": "Aucune activité pour le moment."
+    ,"Deleted model": "Modèle supprimé"
+}
