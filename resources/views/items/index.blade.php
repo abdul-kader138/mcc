@@ -42,8 +42,9 @@
         @media(max-width:640px){#catalog-grid.view-list .catalog-card{grid-template-columns:1fr}}
         #recently-viewed:empty{display:none}
         .view-toggle-btn.is-active{background:rgba(255,255,255,.14);color:#fff}
-        .field-select{background-image:none}
+        .field-select{background-image:none;-webkit-appearance:none;appearance:none}
         ::selection{background:#22d3ee;color:#04141a}
+        .tabular-nums{font-variant-numeric:tabular-nums}
     </style>
 </head>
 <body class="min-h-screen bg-[#07080c] text-white antialiased">
@@ -54,10 +55,10 @@
         <div class="absolute -bottom-40 -right-20 h-[32rem] w-[32rem] rounded-full bg-indigo-500/10 blur-3xl"></div>
     </div>
 
-    <header class="relative z-20 border-b border-white/10 bg-[#07080c]/70 backdrop-blur-xl">
+    <header class="sticky top-0 z-20 border-b border-white/10 bg-[#07080c]/80 shadow-[0_1px_0_rgba(255,255,255,.04),0_12px_30px_-18px_rgba(0,0,0,.8)] backdrop-blur-xl">
         <div class="mx-auto flex min-h-[4.5rem] max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-3 lg:px-12">
             <a href="{{ route('items.index') }}" class="flex shrink-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-4 focus-visible:ring-offset-[#07080c]">
-                <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/20 bg-gradient-to-br from-cyan-300/20 to-indigo-400/10 text-cyan-200" aria-hidden="true">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/20 bg-gradient-to-br from-cyan-300/20 to-indigo-400/10 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,.08)_inset]" aria-hidden="true">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
                 <span class="font-semibold tracking-tight">Model Studio</span>
@@ -81,19 +82,19 @@
                 <span class="h-1.5 w-1.5 rounded-full bg-cyan-300"></span>
                 Public collection
             </p>
-            <h1 class="text-5xl font-semibold leading-[1.05] tracking-[-.03em] sm:text-6xl">
+            <h1 class="bg-gradient-to-br from-white via-white to-cyan-200/90 bg-clip-text text-5xl font-semibold leading-[1.05] tracking-[-.03em] text-transparent sm:text-6xl">
                 Explore every<br class="hidden sm:block"> angle.
             </h1>
             <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-400">
                 Browse the collection, open any model in an interactive 3D space, and make your own color and texture variations — right in the browser.
             </p>
             <div class="mt-7 flex flex-wrap items-center gap-2.5 text-xs text-slate-400">
-                <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[.03] px-3 py-1.5">
+                <span class="tabular-nums inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[.03] px-3 py-1.5">
                     <svg class="h-3.5 w-3.5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/></svg>
                     {{ number_format($items->total()) }} {{ $items->total() === 1 ? 'model' : 'models' }} listed
                 </span>
                 @if(count($categories))
-                <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[.03] px-3 py-1.5">
+                <span class="tabular-nums inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[.03] px-3 py-1.5">
                     <svg class="h-3.5 w-3.5 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
                     {{ count($categories) }} {{ count($categories) === 1 ? 'category' : 'categories' }}
                 </span>
@@ -110,27 +111,33 @@
         <section id="catalog" class="mt-12 scroll-mt-24 rounded-3xl border border-white/10 bg-white/[.025] p-3 shadow-2xl shadow-black/20 backdrop-blur-sm md:p-4">
             <form method="GET" action="{{ route('items.index') }}" class="flex flex-col gap-3 md:flex-row">
                 <input type="hidden" name="tag" value="{{ $tag }}">
-                <label class="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-black/25 px-4 transition focus-within:border-cyan-300/50">
+                <label class="flex flex-1 items-center gap-3 rounded-2xl border border-white/10 bg-black/25 px-4 transition focus-within:border-cyan-300/50 focus-within:ring-4 focus-within:ring-cyan-300/10">
                     <svg class="h-4 w-4 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
                     <input name="q" value="{{ $search }}" type="search" placeholder="Search models, categories, descriptions…" class="w-full bg-transparent py-3.5 text-sm text-white outline-none placeholder:text-slate-600">
                 </label>
                 <div class="grid grid-cols-2 gap-3 md:flex md:shrink-0">
-                    <select name="category" class="field-select rounded-2xl border border-white/10 bg-[#12151d] px-4 py-3.5 text-sm text-slate-300 outline-none transition hover:border-white/20 focus:border-cyan-300/50 md:w-44">
-                        <option value="">All categories</option>
-                        @foreach($categories as $availableCategory)
-                        <option value="{{ $availableCategory }}" @selected($category === $availableCategory)>{{ $availableCategory }}</option>
-                        @endforeach
-                    </select>
-                    <select name="sort" class="field-select rounded-2xl border border-white/10 bg-[#12151d] px-4 py-3.5 text-sm text-slate-300 outline-none transition hover:border-white/20 focus:border-cyan-300/50 md:w-44">
-                        <option value="featured" @selected($sort === 'featured')>Featured first</option>
-                        <option value="latest" @selected($sort === 'latest')>Newest</option>
-                        <option value="popular" @selected($sort === 'popular')>Most viewed</option>
-                        <option value="liked" @selected($sort === 'liked')>Most liked</option>
-                        <option value="name" @selected($sort === 'name')>Name A–Z</option>
-                    </select>
+                    <div class="relative md:w-44">
+                        <select name="category" class="field-select w-full rounded-2xl border border-white/10 bg-[#12151d] py-3.5 pl-4 pr-9 text-sm text-slate-300 outline-none transition hover:border-white/20 focus:border-cyan-300/50">
+                            <option value="">All categories</option>
+                            @foreach($categories as $availableCategory)
+                            <option value="{{ $availableCategory }}" @selected($category === $availableCategory)>{{ $availableCategory }}</option>
+                            @endforeach
+                        </select>
+                        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m5 8 5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="relative md:w-44">
+                        <select name="sort" class="field-select w-full rounded-2xl border border-white/10 bg-[#12151d] py-3.5 pl-4 pr-9 text-sm text-slate-300 outline-none transition hover:border-white/20 focus:border-cyan-300/50">
+                            <option value="featured" @selected($sort === 'featured')>Featured first</option>
+                            <option value="latest" @selected($sort === 'latest')>Newest</option>
+                            <option value="popular" @selected($sort === 'popular')>Most viewed</option>
+                            <option value="liked" @selected($sort === 'liked')>Most liked</option>
+                            <option value="name" @selected($sort === 'name')>Name A–Z</option>
+                        </select>
+                        <svg class="pointer-events-none absolute right-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m5 8 5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
                 </div>
                 <div class="flex shrink-0 gap-2">
-                    <button class="flex-1 rounded-2xl bg-cyan-300 px-6 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 md:flex-none">Search</button>
+                    <button class="flex-1 rounded-2xl bg-cyan-300 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-[0_8px_24px_-8px_rgba(34,211,238,.55)] transition hover:bg-cyan-200 hover:shadow-[0_10px_28px_-6px_rgba(34,211,238,.65)] md:flex-none">Search</button>
                     @if($search || $category || $tag || $sort !== 'featured')
                     <a href="{{ route('items.index') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 px-4 py-3.5 text-sm text-slate-400 transition hover:border-white/20 hover:text-white" aria-label="Clear filters">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="m6 6 12 12M18 6 6 18" stroke-linecap="round"/></svg>
@@ -174,7 +181,7 @@
                         <svg class="h-20 w-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     @endif
-                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition group-hover:opacity-100"></div>
+                    <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/40 to-transparent opacity-60 transition group-hover:opacity-100"></div>
                     <div class="absolute left-3 top-3 flex flex-wrap gap-1.5">
                         <span class="inline-flex items-center gap-1 rounded-full border border-white/15 bg-black/40 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[.14em] text-cyan-100 backdrop-blur">
                             <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/></svg>
@@ -212,7 +219,7 @@
                             Open 3D model
                             <svg class="h-3.5 w-3.5 transition group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
-                        <span class="flex items-center gap-3 text-xs text-slate-500">
+                        <span class="tabular-nums flex items-center gap-3 text-xs text-slate-500">
                             <span class="inline-flex items-center gap-1" title="Views">
                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.75"/></svg>
                                 {{ number_format($item->view_count) }}
@@ -294,8 +301,8 @@
                 recent.slice(0, 8).forEach(function(entry){
                     var a = document.createElement('a');
                     a.href = '/models/' + encodeURIComponent(entry.slug);
-                    a.className = 'flex w-40 shrink-0 flex-col overflow-hidden rounded-xl border border-white/10 bg-white/[.03] transition hover:border-cyan-300/40';
-                    a.innerHTML = (entry.image ? '<img src="'+entry.image+'" class="h-20 w-full object-cover" loading="lazy">' : '<div class="flex h-20 items-center justify-center bg-gradient-to-br from-cyan-500/15 to-indigo-500/15 text-2xl text-cyan-200/60">◈</div>') + '<span class="truncate p-2 text-xs text-slate-300">'+entry.name+'</span>';
+                    a.className = 'flex w-40 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[.03] shadow-[0_16px_40px_-24px_rgba(0,0,0,.7)] transition hover:-translate-y-0.5 hover:border-cyan-300/40';
+                    a.innerHTML = (entry.image ? '<img src="'+entry.image+'" class="h-20 w-full object-cover" loading="lazy">' : '<div class="flex h-20 items-center justify-center bg-gradient-to-br from-cyan-500/15 to-indigo-500/15 text-2xl text-cyan-200/60">◈</div>') + '<span class="truncate p-2.5 text-xs text-slate-300">'+entry.name+'</span>';
                     strip.append(a);
                 });
             }
