@@ -24,22 +24,59 @@
             mask-image:radial-gradient(ellipse 65% 60% at 50% 0%,#000,transparent 78%);
             -webkit-mask-image:radial-gradient(ellipse 65% 60% at 50% 0%,#000,transparent 78%);
         }
+        /* ---- Catalog card: base surface + 3D tilt/lift transform driven by CSS vars set from JS ---- */
         .catalog-card{
+            --rx:0deg;--ry:0deg;--mx:50%;--my:50%;--lift:0px;--scale:1;
+            position:relative;
             background:linear-gradient(155deg,rgba(255,255,255,.065),rgba(255,255,255,.015));
             box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 24px 60px -24px rgba(0,0,0,.55);
+            transform:perspective(1000px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift)) scale(var(--scale));
+            transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s ease,border-color .35s ease;
+            will-change:transform;
         }
-        .catalog-card:hover{box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 30px 80px -20px rgba(34,211,238,.18)}
+        @media(hover:hover){
+            .catalog-card:hover{
+                --lift:-8px;--scale:1.012;
+                box-shadow:0 1px 0 rgba(255,255,255,.07) inset,0 30px 80px -18px rgba(34,211,238,.22);
+            }
+        }
+        /* Cursor-tracked spotlight glow, painted above everything, ignores clicks */
+        .catalog-card::before{
+            content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+            background:radial-gradient(280px circle at var(--mx) var(--my), rgba(34,211,238,.16), transparent 72%);
+            opacity:0;transition:opacity .45s ease;
+        }
+        @media(hover:hover){ .catalog-card:hover::before{opacity:1} }
+        /* Staggered fade/slide entrance, skipped entirely for reduced-motion users */
+        @media(prefers-reduced-motion:no-preference){
+            .catalog-card{opacity:0;animation:card-in .6s cubic-bezier(.16,1,.3,1) forwards;animation-delay:calc(var(--i,0) * 55ms)}
+        }
+        @keyframes card-in{from{opacity:0;transform:perspective(1000px) translateY(18px) scale(.98)}to{opacity:1;transform:perspective(1000px) translateY(0) scale(1)}}
         .image-shine:after{
             content:"";position:absolute;inset:0;
             background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.14) 48%,transparent 70%);
             transform:translateX(-120%);transition:transform .7s ease;
         }
         .catalog-card:hover .image-shine:after{transform:translateX(120%)}
+        @keyframes badge-glow{0%,100%{box-shadow:0 0 0 0 rgba(252,211,77,.35)}50%{box-shadow:0 0 0 5px rgba(252,211,77,0)}}
+        .featured-badge{animation:badge-glow 2.4s ease-in-out infinite}
+        .tag-chip{transition:transform .2s ease,border-color .2s ease,background-color .2s ease,color .2s ease}
+        .tag-chip:hover{transform:translateY(-1px)}
         .tag-chip.is-active{background:#22d3ee!important;color:#04141a!important;border-color:#22d3ee!important}
-        #catalog-grid.view-list{grid-template-columns:1fr!important}
-        #catalog-grid.view-list .catalog-card{display:grid;grid-template-columns:18rem 1fr}
-        #catalog-grid.view-list .image-shine{aspect-ratio:auto}
-        @media(max-width:640px){#catalog-grid.view-list .catalog-card{grid-template-columns:1fr}}
+
+        /* ---- List view: a clean horizontal row instead of a squeezed vertical card ---- */
+        #catalog-grid.view-list{grid-template-columns:1fr!important;gap:1.1rem!important}
+        #catalog-grid.view-list .catalog-card{display:grid;grid-template-columns:16rem 1fr;min-height:11.5rem}
+        #catalog-grid.view-list .catalog-card:hover{--lift:0px}
+        #catalog-grid.view-list .image-shine{aspect-ratio:auto;height:100%}
+        #catalog-grid.view-list .card-body{display:flex;flex-direction:column;justify-content:center;gap:.6rem;padding:1.5rem 1.75rem}
+        #catalog-grid.view-list .card-body > *{margin:0!important}
+        #catalog-grid.view-list .card-footer{border-top:0;padding-top:0}
+        #catalog-grid.view-list .card-tags,#catalog-grid.view-list .line-clamp-2{display:none}
+        @media(max-width:640px){
+            #catalog-grid.view-list .catalog-card{grid-template-columns:1fr;min-height:0}
+            #catalog-grid.view-list .image-shine{aspect-ratio:16/9;height:auto}
+        }
         .view-toggle-btn.is-active{background:rgba(255,255,255,.14);color:#fff}
         .field-select{background-image:none;-webkit-appearance:none;appearance:none}
         ::selection{background:#22d3ee;color:#04141a}
@@ -169,7 +206,7 @@
 
         <section id="catalog-grid" class="mt-5 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             @forelse($items as $item)
-            <a href="{{ route('items.show', $item->slug) }}" data-slug="{{ $item->slug }}" data-name="{{ $item->name }}" data-image="{{ $item->image_path ? '/storage/'.ltrim($item->image_path, '/') : '' }}" data-category="{{ $item->category }}" class="catalog-card group overflow-hidden rounded-[1.5rem] border border-white/10 transition duration-300 hover:-translate-y-1 hover:border-cyan-300/40">
+            <a href="{{ route('items.show', $item->slug) }}" data-slug="{{ $item->slug }}" data-name="{{ $item->name }}" data-image="{{ $item->image_path ? '/storage/'.ltrim($item->image_path, '/') : '' }}" data-category="{{ $item->category }}" style="--i:{{ $loop->index }}" class="catalog-card group overflow-hidden rounded-[1.5rem] border border-white/10 hover:border-cyan-300/40">
                 <div class="image-shine relative aspect-[16/11] overflow-hidden bg-gradient-to-br from-cyan-500/20 via-slate-900 to-indigo-500/20">
                     @if($item->image_path)
                     <img loading="lazy" src="{{ '/storage/'.ltrim($item->image_path, '/') }}" alt="{{ $item->name }} cover image" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
@@ -185,7 +222,7 @@
                             Interactive 3D
                         </span>
                         @if($item->is_featured)
-                        <span class="inline-flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-300/15 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[.14em] text-amber-100 backdrop-blur">
+                        <span class="featured-badge inline-flex items-center gap-1 rounded-full border border-amber-300/30 bg-amber-300/15 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[.14em] text-amber-100 backdrop-blur">
                             <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 14.6 9l6.9.6-5.2 4.5 1.6 6.7L12 17.3 5.9 20.8l1.6-6.7L2.3 9.6 9.2 9 12 2.5Z"/></svg>
                             Featured
                         </span>
@@ -195,7 +232,7 @@
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                 </div>
-                <div class="p-7">
+                <div class="card-body p-7">
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
                             <h2 class="truncate text-2xl font-medium tracking-tight">{{ $item->name }}</h2>
@@ -205,13 +242,13 @@
                     </div>
                     <p class="mt-4 min-h-[3.25rem] line-clamp-2 text-sm leading-6 text-slate-400">{{ $item->description ?: 'A detailed 3D model ready to explore and customize.' }}</p>
                     @if($item->tags)
-                    <div class="mt-4 flex flex-wrap gap-1.5">
+                    <div class="card-tags mt-4 flex flex-wrap gap-1.5">
                         @foreach(array_slice($item->tags, 0, 3) as $itemTag)
                         <span class="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-slate-500">#{{ $itemTag }}</span>
                         @endforeach
                     </div>
                     @endif
-                    <div class="mt-7 flex items-center justify-between border-t border-white/10 pt-5">
+                    <div class="card-footer mt-7 flex items-center justify-between border-t border-white/10 pt-5">
                         <span class="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-300">
                             Open 3D model
                             <svg class="h-3.5 w-3.5 transition group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -288,6 +325,26 @@
         gridBtn.onclick = function(){ setView('grid'); };
         listBtn.onclick = function(){ setView('list'); };
         try { setView(localStorage.getItem('catalog-view') || 'grid'); } catch(e){ setView('grid'); }
+
+        var canTilt = matchMedia('(hover:hover)').matches && matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+        if (canTilt) {
+            document.querySelectorAll('.catalog-card').forEach(function(card){
+                card.addEventListener('pointermove', function(e){
+                    if (gridEl.classList.contains('view-list')) return;
+                    var rect = card.getBoundingClientRect();
+                    var x = (e.clientX - rect.left) / rect.width;
+                    var y = (e.clientY - rect.top) / rect.height;
+                    card.style.setProperty('--rx', ((0.5 - y) * 6).toFixed(2) + 'deg');
+                    card.style.setProperty('--ry', ((x - 0.5) * 8).toFixed(2) + 'deg');
+                    card.style.setProperty('--mx', (x * 100).toFixed(1) + '%');
+                    card.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+                });
+                card.addEventListener('pointerleave', function(){
+                    card.style.setProperty('--rx', '0deg');
+                    card.style.setProperty('--ry', '0deg');
+                });
+            });
+        }
     })();
     </script>
 </body>
