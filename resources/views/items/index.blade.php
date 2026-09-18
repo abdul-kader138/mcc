@@ -1,6 +1,5 @@
 <!doctype html>
-@include('components.public-language-switcher')
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Model library</title>
@@ -10,7 +9,23 @@
 </head>
 <body class="min-h-screen text-white">
     <div class="pointer-events-none fixed inset-0 overflow-hidden"><div class="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl"></div><div class="absolute -bottom-40 -right-20 h-[32rem] w-[32rem] rounded-full bg-indigo-500/10 blur-3xl"></div></div>
-    <header class="relative border-b border-white/10 bg-black/20 px-6 backdrop-blur-xl lg:px-12"><div class="mx-auto flex h-20 max-w-7xl items-center justify-between"><a href="{{ route('items.index') }}" class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-300/15 text-xl text-cyan-200">◈</span><span class="font-medium tracking-tight">Model studio</span></a><a href="/admin" class="rounded-full border border-white/10 px-5 py-2.5 text-sm text-slate-300 transition hover:border-cyan-300/40 hover:bg-white/10 hover:text-white">Admin workspace <span class="ml-1">↗</span></a></div></header>
+    <header class="relative border-b border-white/10 bg-black/20 backdrop-blur-xl">
+        <div class="mx-auto flex min-h-20 max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-4 px-6 py-4 lg:px-12">
+            <a href="{{ route('items.index') }}" class="flex shrink-0 items-center gap-3 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-4 focus-visible:ring-offset-[#080a0f]">
+                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-300/15 text-xl text-cyan-200" aria-hidden="true">◈</span>
+                <span class="font-medium tracking-tight">Model studio</span>
+            </a>
+            <div class="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto sm:gap-3">
+                <a href="/admin" class="group inline-flex h-11 shrink-0 items-center gap-2 rounded-xl border border-cyan-300/20 bg-cyan-300/[.06] px-3 sm:px-4 text-sm font-medium text-cyan-100 transition hover:border-cyan-300/40 hover:bg-cyan-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080a0f]">
+                    <svg class="h-4 w-4 text-cyan-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M3.5 9h17M9 9v11.5"/></svg>
+                    <span>Admin workspace</span>
+                    <svg class="h-3.5 w-3.5 text-cyan-300/60 transition group-hover:text-cyan-200" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <span class="hidden h-6 w-px shrink-0 bg-white/10 sm:block" aria-hidden="true"></span>
+                @include('components.public-language-switcher', ['inline' => true])
+            </div>
+        </div>
+    </header>
     <main class="relative mx-auto max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
         <section class="max-w-3xl"><p class="mb-5 text-xs font-semibold uppercase tracking-[.35em] text-cyan-300">Public collection</p><h1 class="text-5xl font-semibold tracking-[-.04em] sm:text-6xl">Explore every angle.</h1><p class="mt-6 max-w-2xl text-lg leading-8 text-slate-400">Browse the collection, open any model in an interactive 3D space, and make your own color and texture variations.</p></section>
 
