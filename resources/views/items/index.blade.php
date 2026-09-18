@@ -37,7 +37,7 @@
         .catalog-card:hover .image-shine:after{transform:translateX(120%)}
         .tag-chip.is-active{background:#22d3ee!important;color:#04141a!important;border-color:#22d3ee!important}
         #catalog-grid.view-list{grid-template-columns:1fr!important}
-        #catalog-grid.view-list .catalog-card{display:grid;grid-template-columns:16rem 1fr}
+        #catalog-grid.view-list .catalog-card{display:grid;grid-template-columns:18rem 1fr}
         #catalog-grid.view-list .image-shine{aspect-ratio:auto}
         @media(max-width:640px){#catalog-grid.view-list .catalog-card{grid-template-columns:1fr}}
         #recently-viewed:empty{display:none}
@@ -163,15 +163,15 @@
             </div>
         </div>
 
-        <section id="catalog-grid" class="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <section id="catalog-grid" class="mt-5 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             @forelse($items as $item)
             <a href="{{ route('items.show', $item->slug) }}" data-slug="{{ $item->slug }}" data-name="{{ $item->name }}" data-image="{{ $item->image_path ? '/storage/'.ltrim($item->image_path, '/') : '' }}" data-category="{{ $item->category }}" class="catalog-card group overflow-hidden rounded-[1.5rem] border border-white/10 transition duration-300 hover:-translate-y-1 hover:border-cyan-300/40">
-                <div class="image-shine relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-cyan-500/20 via-slate-900 to-indigo-500/20">
+                <div class="image-shine relative aspect-[16/11] overflow-hidden bg-gradient-to-br from-cyan-500/20 via-slate-900 to-indigo-500/20">
                     @if($item->image_path)
                     <img loading="lazy" src="{{ '/storage/'.ltrim($item->image_path, '/') }}" alt="{{ $item->name }} cover image" class="h-full w-full object-cover transition duration-700 group-hover:scale-105">
                     @else
                     <div class="flex h-full items-center justify-center text-cyan-200/50">
-                        <svg class="h-16 w-16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        <svg class="h-20 w-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke-linejoin="round"/><path d="M4 7l8 4 8-4M12 11v10" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                     @endif
                     <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition group-hover:opacity-100"></div>
@@ -191,15 +191,15 @@
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                 </div>
-                <div class="p-6">
+                <div class="p-7">
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0">
-                            <h2 class="truncate text-xl font-medium tracking-tight">{{ $item->name }}</h2>
-                            @if($item->category)<p class="mt-1 text-xs uppercase tracking-[.18em] text-cyan-300/80">{{ $item->category }}</p>@endif
+                            <h2 class="truncate text-2xl font-medium tracking-tight">{{ $item->name }}</h2>
+                            @if($item->category)<p class="mt-1.5 text-xs uppercase tracking-[.18em] text-cyan-300/80">{{ $item->category }}</p>@endif
                         </div>
-                        <span class="mt-1 shrink-0 text-xs text-slate-500">{{ $item->created_at?->format('M Y') }}</span>
+                        <span class="mt-1.5 shrink-0 text-xs text-slate-500">{{ $item->created_at?->format('M Y') }}</span>
                     </div>
-                    <p class="mt-3 min-h-[3rem] line-clamp-2 text-sm leading-6 text-slate-400">{{ $item->description ?: 'A detailed 3D model ready to explore and customize.' }}</p>
+                    <p class="mt-4 min-h-[3.25rem] line-clamp-2 text-sm leading-6 text-slate-400">{{ $item->description ?: 'A detailed 3D model ready to explore and customize.' }}</p>
                     @if($item->tags)
                     <div class="mt-4 flex flex-wrap gap-1.5">
                         @foreach(array_slice($item->tags, 0, 3) as $itemTag)
@@ -207,7 +207,7 @@
                         @endforeach
                     </div>
                     @endif
-                    <div class="mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                    <div class="mt-7 flex items-center justify-between border-t border-white/10 pt-5">
                         <span class="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-300">
                             Open 3D model
                             <svg class="h-3.5 w-3.5 transition group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-6-6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
