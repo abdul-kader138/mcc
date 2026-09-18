@@ -40,7 +40,6 @@
         #catalog-grid.view-list .catalog-card{display:grid;grid-template-columns:18rem 1fr}
         #catalog-grid.view-list .image-shine{aspect-ratio:auto}
         @media(max-width:640px){#catalog-grid.view-list .catalog-card{grid-template-columns:1fr}}
-        #recently-viewed:empty{display:none}
         .view-toggle-btn.is-active{background:rgba(255,255,255,.14);color:#fff}
         .field-select{background-image:none;-webkit-appearance:none;appearance:none}
         ::selection{background:#22d3ee;color:#04141a}
@@ -105,8 +104,6 @@
                 </span>
             </div>
         </section>
-
-        <section id="recently-viewed" class="mt-10"></section>
 
         <section id="catalog" class="mt-12 scroll-mt-24 rounded-3xl border border-white/10 bg-white/[.025] p-3 shadow-2xl shadow-black/20 backdrop-blur-sm md:p-4">
             <form method="GET" action="{{ route('items.index') }}" class="flex flex-col gap-3 md:flex-row">
@@ -291,22 +288,6 @@
         gridBtn.onclick = function(){ setView('grid'); };
         listBtn.onclick = function(){ setView('list'); };
         try { setView(localStorage.getItem('catalog-view') || 'grid'); } catch(e){ setView('grid'); }
-
-        try {
-            var recent = JSON.parse(localStorage.getItem('recently-viewed') || '[]');
-            if (recent.length) {
-                var wrap = document.querySelector('#recently-viewed');
-                wrap.innerHTML = '<p class="mb-3 text-xs font-semibold uppercase tracking-[.25em] text-slate-500">Recently viewed</p><div class="flex gap-3 overflow-x-auto pb-2"></div>';
-                var strip = wrap.querySelector('div');
-                recent.slice(0, 8).forEach(function(entry){
-                    var a = document.createElement('a');
-                    a.href = '/models/' + encodeURIComponent(entry.slug);
-                    a.className = 'flex w-40 shrink-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[.03] shadow-[0_16px_40px_-24px_rgba(0,0,0,.7)] transition hover:-translate-y-0.5 hover:border-cyan-300/40';
-                    a.innerHTML = (entry.image ? '<img src="'+entry.image+'" class="h-20 w-full object-cover" loading="lazy">' : '<div class="flex h-20 items-center justify-center bg-gradient-to-br from-cyan-500/15 to-indigo-500/15 text-2xl text-cyan-200/60">◈</div>') + '<span class="truncate p-2.5 text-xs text-slate-300">'+entry.name+'</span>';
-                    strip.append(a);
-                });
-            }
-        } catch(e){}
     })();
     </script>
 </body>
