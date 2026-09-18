@@ -14,8 +14,13 @@ class ItemAnalyticsService
             'item_id' => $item->id,
             'user_id' => $request->user()?->id,
             'event' => $event,
-            'visitor_hash' => hash('sha256', $request->ip().'|'.($request->userAgent() ?? '')),
+            'visitor_hash' => static::visitorHash($request),
             'metadata' => $metadata,
         ]);
+    }
+
+    public static function visitorHash(Request $request): string
+    {
+        return hash('sha256', $request->ip().'|'.($request->userAgent() ?? ''));
     }
 }

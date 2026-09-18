@@ -46,31 +46,50 @@ class ItemResource extends Resource
                 FileUpload::make('model_path')->label(__('3D model (GLB)'))->acceptedFileTypes(['model/gltf-binary', 'application/octet-stream', 'application/gltf-binary'])->disk('public')->directory('items/models')->required()->rules(['file', 'extensions:glb', 'max:102400'])->maxSize(102400)->helperText(__('Upload a .glb file. Maximum size: 100 MB. The model is rendered in the preview and public viewer.')),
                 Toggle::make('is_published')->label(__('Visible on public gallery'))->default(false),
                 Toggle::make('is_featured')->label(__('Featured item'))->helperText(__('Featured items appear first in the public gallery.')),
+                Toggle::make('allow_download')->label(__('Allow model download'))->helperText(__('Lets visitors download the original .glb file from the public preview.')),
             ])->columns(2),
         ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table->columns([
-            ImageColumn::make('image_path')->label('')->disk('public')->square(),
-            TextColumn::make('name')->label(__('Name'))->searchable()->sortable(),
-            TextColumn::make('category')->label(__('Category'))->badge()->sortable(),
-            TextColumn::make('view_count')->label(__('Views'))->numeric()->sortable(),
-            TextColumn::make('description')->label(__('Description'))->limit(60)->wrap(),
-            IconColumn::make('is_published')->label(__('Public'))->boolean(),
-            IconColumn::make('is_featured')->label(__('Featured'))->boolean(),
-            TextColumn::make('model_validation_status')->label(__('Model check'))->badge()->color(fn (string $state): string => match ($state) {
-                'valid' => 'success',
-                'invalid' => 'danger',
-                default => 'warning',
-            }),
-            TextColumn::make('user.name')->label(__('Created by'))->toggleable(isToggledHiddenByDefault: true),
-            TextColumn::make('updated_at')->label(__('Updated'))->dateTime('d M Y')->sortable(),
-        ])->actions([
-            ViewAction::make()->url(fn (Item $record): string => route('items.show', $record->slug))->openUrlInNewTab()->label(__('Preview')),
-            EditAction::make(), DeleteAction::make(),
-        ])->bulkActions([BulkActionGroup::make([DeleteBulkAction::make()])]);
+        return $table
+            ->columns([
+                ImageColumn::make('image_path')->label('')->disk('public')->circular(),
+                TextColumn::make('name')->label(__('Name'))->searchable()->sortable()->weight('medium')
+                    ->description(fn (Item $record): ?string => $record->category),
+                TextColumn::make('is_published')->label(__('Status'))->badge()->sortable()
+                    ->formatStateUsing(fn (bool $state): string => $state ? __('Published') : __('Draft'))
+                    ->color(fn (bool $state): string => $state ? 'success' : 'gray'),
+                TextColumn::make('view_count')->label(__('Views'))->numeric()->sortable()->alignEnd()
+                    ->icon('heroicon-o-eye'),
+                TextColumn::make('updated_at')->label(__('Updated'))->since()->dateTooltip('d M Y, H:i')->sortable(),
+
+                TextColumn::make('category')->label(__('Category'))->badge()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('is_featured')->label(__('Featured'))->boolean()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('likes_count')->label(__('Likes'))->counts('likes')->numeric()->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('model_validation_status')->label(__('Model check'))->badge()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->color(fn (string $state): string => match ($state) {
+                        'valid' => 'success',
+                        'invalid' => 'danger',
+                        default => 'warning',
+                    }),
+                TextColumn::make('description')->label(__('Description'))->limit(60)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.name')->label(__('Created by'))
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->striped()
+            ->actions([
+                ViewAction::make()->url(fn (Item $record): string => route('items.show', $record->slug))->openUrlInNewTab()->label(__('Preview')),
+                EditAction::make(), DeleteAction::make(),
+            ])
+            ->bulkActions([BulkActionGroup::make([DeleteBulkAction::make()])]);
     }
 
     public static function getPages(): array

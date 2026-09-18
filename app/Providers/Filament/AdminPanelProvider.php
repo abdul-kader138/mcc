@@ -57,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->path('')
+            ->path('admin')
             ->homeUrl(fn () => ItemResource::getUrl())
             ->login(Login::class)
             ->registration(Register::class)

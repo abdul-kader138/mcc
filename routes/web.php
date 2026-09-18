@@ -5,12 +5,16 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\StaffVerifyEmailController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemLikeController;
 use App\Http\Controllers\ModelConfigurationController;
 use App\Http\Controllers\QuoteRequestController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/models', [ItemController::class, 'index'])->name('items.index');
+Route::get('/', [ItemController::class, 'index'])->name('items.index');
+Route::redirect('/models', '/', 301);
 Route::get('/models/{item:slug}', [ItemController::class, 'show'])->name('items.show');
+Route::get('/models/{item:slug}/download', [ItemController::class, 'download'])->name('items.download');
+Route::post('/models/{item:slug}/like', [ItemLikeController::class, 'toggle'])->middleware('throttle:30,1')->name('items.like');
 Route::post('/models/{item:slug}/configurations', [ModelConfigurationController::class, 'store'])->middleware('throttle:20,1')->name('items.configurations.store');
 Route::get('/models/{item:slug}/configurations/{configuration:token}', [ModelConfigurationController::class, 'show'])->name('items.configurations.show');
 Route::post('/models/{item:slug}/quote-requests', [QuoteRequestController::class, 'store'])->middleware('throttle:5,1')->name('items.quote-requests.store');
