@@ -243,7 +243,7 @@
                     <p class="mt-4 min-h-[3.25rem] line-clamp-2 text-sm leading-6 text-slate-400">{{ $item->description ?: 'A detailed 3D model ready to explore and customize.' }}</p>
                     @if($item->tags)
                     <div class="card-tags mt-4 flex flex-wrap gap-1.5">
-                        @foreach(array_slice($item->tags, 0, 3) as $itemTag)
+                        @foreach(array_slice((array) $item->tags, 0, 3) as $itemTag)
                         <span class="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-slate-500">#{{ $itemTag }}</span>
                         @endforeach
                     </div>
