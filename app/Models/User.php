@@ -47,6 +47,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasName, 
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
+            'tour_completed_at' => 'datetime',
         ];
     }
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemLikeController;
 use App\Http\Controllers\ModelConfigurationController;
 use App\Http\Controllers\QuoteRequestController;
+use App\Http\Controllers\TourController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ItemController::class, 'index'])->name('items.index');
@@ -28,6 +29,11 @@ Route::get('/admin/email/verify/{id}/{hash}', StaffVerifyEmailController::class)
     ->name('staff.verification.verify');
 
 Route::post('/locale', [LocaleController::class, 'update'])->name('locale.update');
+
+Route::middleware('auth')->prefix('admin/tour')->name('admin.tour.')->group(function () {
+    Route::post('/complete', [TourController::class, 'complete'])->name('complete');
+    Route::post('/reset', [TourController::class, 'reset'])->name('reset');
+});
 
 Route::prefix('admin/auth/google')->name('auth.google.')->middleware('throttle:30,1')->group(function () {
     Route::get('/redirect', [GoogleAuthController::class, 'redirect'])->name('redirect');

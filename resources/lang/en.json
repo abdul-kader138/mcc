@@ -418,5 +418,22 @@
     "Booking #:id change is complete.": "Booking #:id change is complete.",
     "Ticket issuance failed": "Ticket issuance failed",
     "Open booking": "Open booking",
-    "Booking #:id was paid but the provider order could not be created after several retries. Manual reconciliation is required.": "Booking #:id was paid but the provider order could not be created after several retries. Manual reconciliation is required."
+    "Booking #:id was paid but the provider order could not be created after several retries. Manual reconciliation is required.": "Booking #:id was paid but the provider order could not be created after several retries. Manual reconciliation is required.",
+    "Take a tour": "Take a tour",
+    "Welcome to the admin panel": "Welcome to the admin panel",
+    "Take a quick tour to see where everything lives — it only takes a minute.": "Take a quick tour to see where everything lives — it only takes a minute.",
+    "Navigation": "Navigation",
+    "Everything you manage lives behind one of these links, grouped by section.": "Everything you manage lives behind one of these links, grouped by section.",
+    "Global search": "Global search",
+    "Search across every resource in the panel from anywhere.": "Search across every resource in the panel from anywhere.",
+    "Notifications": "Notifications",
+    "New activity and alerts show up here.": "New activity and alerts show up here.",
+    "Your profile": "Your profile",
+    "Update your account, switch theme or language, or sign out from here.": "Update your account, switch theme or language, or sign out from here.",
+    "You're all set!": "You're all set!",
+    "You can replay this tour anytime from the \"Take a tour\" button in the topbar.": "You can replay this tour anytime from the \"Take a tour\" button in the topbar.",
+    "Next": "Next",
+    "Back": "Back",
+    "Done": "Done",
+    "{{current}} of {{total}}": "{{current}} of {{total}}"
 }

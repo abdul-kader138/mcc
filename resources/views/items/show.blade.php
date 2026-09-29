@@ -1,8 +1,19 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{{ $item->name }} · 3D preview</title><script src="https://cdn.tailwindcss.com"></script><style>
 html,body{background:#f8fafc;color:#0f172a}#stage{background:radial-gradient(circle at 50% 42%,#263852 0,#111827 42%,#090b10 100%)}#stage canvas{display:block;width:100%;height:100%}.mesh-active{background:#e0f2fe!important;color:#0369a1!important;border-color:#7dd3fc!important}.preview-header{height:56px;background:rgba(255,255,255,.94);border-color:#cbd5e1;color:#0f172a}.preview-sidebar{background:#fff;border-color:#cbd5e1;color:#0f172a}.preview-sidebar [class*="border-white"],.preview-sidebar [class*="border-slate"]{border-color:#cbd5e1!important}.preview-sidebar [class*="bg-black"],.preview-sidebar [class*="bg-[#"],.preview-sidebar [class*="bg-white\/\[\.03\]"],.preview-sidebar [class*="bg-white\/5"]{background:#f8fafc!important}.preview-sidebar [class*="text-slate-200"],.preview-sidebar [class*="text-slate-300"],.preview-sidebar [class*="text-slate-400"],.preview-sidebar [class*="text-slate-500"]{color:#475569!important}.preview-sidebar [class*="text-slate-600"]{color:#334155!important}.preview-sidebar [class*="text-cyan-300"]{color:#0e7490!important}.preview-sidebar [class*="text-white"]{color:#0f172a!important}.preview-sidebar select,.preview-sidebar input[type="search"]{background:#fff!important;border-color:#94a3b8!important;color:#0f172a!important}.preview-sidebar input::placeholder{color:#64748b!important;opacity:1}.preview-sidebar select option{background:#fff;color:#0f172a}.preview-sidebar #parts{background:#f8fafc!important;border-color:#cbd5e1!important}.preview-sidebar #parts .part{color:#334155!important}.preview-sidebar #parts .part:hover{background:#e0f2fe!important;color:#0369a1!important}.preview-sidebar #texture-library .texture-option{background:#fff!important;border-color:#cbd5e1!important}.preview-sidebar #texture-library .texture-option:hover{border-color:#0891b2!important;background:#ecfeff!important}.preview-sidebar [class*="bg-white\/10"]{background:#f1f5f9!important;color:#334155!important}.preview-sidebar #apply-color,.preview-sidebar #apply-variant{background:#0f172a!important;color:#fff!important}.compact-control{border:1px solid rgba(255,255,255,.12);background:rgba(15,23,42,.62);box-shadow:0 8px 24px rgba(0,0,0,.18)}@media(max-width:1023px){#stage{min-height:65vh}.preview-sidebar{border-top:1px solid #cbd5e1}}
+</style><link rel="stylesheet" href="https://unpkg.com/driver.js@1.8.0/dist/driver.css"><style>
+.driver-popover{font-family:ui-sans-serif,system-ui,sans-serif;max-width:22rem;border-radius:.75rem;background:#0e1118;color:#f1f5f9;border:1px solid rgba(255,255,255,.1);box-shadow:0 10px 15px -3px rgb(0 0 0 / .3),0 4px 6px -4px rgb(0 0 0 / .3)}
+.driver-popover-title{font-size:.9375rem;font-weight:600}
+.driver-popover-description{font-size:.8125rem;line-height:1.5;color:#94a3b8;margin-top:.375rem}
+.driver-popover-progress-text{font-size:.75rem;color:#64748b}
+.driver-popover-footer button{font-size:.8125rem;font-weight:500;padding:.375rem .75rem;border-radius:.5rem;border:none;text-shadow:none;background:rgba(34,211,238,.12);color:#67e8f9}
+.driver-popover-footer button:hover{background:rgba(34,211,238,.2)}
+.driver-popover-footer .driver-popover-next-btn{background:#22d3ee;color:#0f172a}
+.driver-popover-footer .driver-popover-next-btn:hover{background:#67e8f9}
+.driver-popover-close-btn{color:#64748b}
+.driver-active-element{border-radius:.75rem!important}
 </style><script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.176.0/build/three.module.js"}}</script></head>
-<body class="min-h-screen bg-slate-50 text-slate-900"><header class="preview-header sticky top-0 z-40 flex items-center justify-between border-b px-4 sm:px-6"><a href="{{ route('items.index') }}" class="inline-flex items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-slate-950"><span class="text-base">←</span><span>Model library</span></a><div class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span><span class="hidden text-[10px] font-semibold uppercase tracking-[.2em] text-slate-500 sm:inline">Interactive preview</span><span class="text-xs font-semibold text-slate-700 sm:hidden">Preview</span></div></header><main class="grid min-h-[calc(100vh-3.5rem)] lg:grid-cols-[minmax(0,1fr)_320px]"><section class="relative min-h-[560px] overflow-hidden lg:min-h-[calc(100vh-3.5rem)]" id="stage"><div class="pointer-events-none absolute left-4 top-4 z-10 max-w-sm sm:left-6 sm:top-5"><div class="pointer-events-auto flex flex-wrap items-center gap-2"><div class="inline-flex items-center rounded-full border border-cyan-300/20 bg-slate-950/45 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-cyan-200 shadow-lg backdrop-blur">{{ $item->category ?: '3D model' }}</div><span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/45 px-2.5 py-1 text-[10px] text-slate-300 shadow-lg backdrop-blur" title="Views">◉ {{ number_format($viewCount) }}</span><button id="like-button" type="button" data-liked="{{ $liked ? '1' : '0' }}" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/45 px-2.5 py-1 text-[10px] shadow-lg backdrop-blur transition {{ $liked ? 'text-rose-300 border-rose-300/30' : 'text-slate-300' }}"><span class="like-icon">{{ $liked ? '♥' : '♡' }}</span> <span class="like-count">{{ number_format($likeCount) }}</span></button></div><h1 class="mt-3 text-xl font-semibold tracking-tight text-white drop-shadow sm:text-2xl">{{ $item->name }}</h1><p class="mt-1 max-w-xs text-xs leading-5 text-slate-300">{{ $item->description ?: 'Explore every detail.' }}</p><p class="mt-2 text-[10px] text-slate-400">Click a part to select · drag to orbit · scroll to zoom · press <kbd class="rounded border border-slate-500/40 px-1">?</kbd> for shortcuts</p></div><div class="absolute bottom-4 left-4 z-10 flex max-w-[calc(100%-2rem)] flex-wrap gap-1.5 sm:bottom-5 sm:left-6"><button id="reset" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Reset</button><button id="fullscreen" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Fullscreen</button><button id="share" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Share</button><button id="png" class="rounded-lg border border-cyan-300/30 bg-cyan-300/15 px-3 py-2 text-[11px] font-semibold text-cyan-100 shadow-lg backdrop-blur hover:bg-cyan-300/25">PNG</button><button id="jpeg" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">JPEG</button>@if($item->allow_download)<a href="{{ route('items.download', $item->slug) }}" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Download GLB</a>@endif<button id="shortcuts-help" type="button" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700" aria-label="Keyboard shortcuts">?</button></div></section><aside class="preview-sidebar flex max-h-[calc(100vh-3.5rem)] flex-col overflow-y-auto border-l p-4 sm:p-5"><div class="mb-4 flex items-start justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-[.2em] text-cyan-600">Configurator</p><h2 class="mt-1 text-lg font-semibold tracking-tight text-slate-900">Model controls</h2></div><span class="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-500">GLB</span></div><div id="sidebar-tabs" class="mb-4 flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1"><button type="button" data-tab="parts" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-900 bg-white shadow-sm">Parts</button><button type="button" data-tab="materials" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-500">Materials</button><button type="button" data-tab="variants" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-500">Variants</button></div><div class="space-y-5"><div data-tab-panel="parts"><div><label class="mb-2 block text-xs font-semibold text-slate-700">Selected part</label><div id="parts" class="max-h-40 space-y-1 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-1.5"><p class="px-3 py-2 text-xs text-slate-500">Loading model…</p></div></div><div class="mt-4"><label for="color" class="mb-2 block text-xs font-semibold text-slate-700">Part color</label><div class="flex items-center gap-2"><input id="color" type="color" value="#22d3ee" class="h-9 w-10 cursor-pointer rounded-lg border border-slate-200 bg-white p-0.5"><button id="apply-color" class="flex-1 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700">Apply color</button></div></div></div><div id="texture-panel-anchor" data-tab-panel="materials" class="hidden"></div><div id="variant-panel-anchor" data-tab-panel="variants" class="hidden"></div><div><div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500"><div class="flex justify-between"><span>Format</span><span class="font-semibold text-slate-700">GLB</span></div><div class="mt-2 flex justify-between"><span>Parts found</span><span id="part-count" class="font-semibold text-slate-700">—</span></div></div></div></div><div class="mt-5 border-t border-slate-200 pt-4"><p class="text-[11px] leading-5 text-slate-500">Changes are rendered locally. Export the current view as PNG or JPEG.</p></div></aside></main>@include('items.related')<script type="module">
+<body class="min-h-screen bg-slate-50 text-slate-900"><header class="preview-header sticky top-0 z-40 flex items-center justify-between border-b px-4 sm:px-6"><a href="{{ route('items.index') }}" class="inline-flex items-center gap-2 text-xs font-medium text-slate-500 transition hover:text-slate-950"><span class="text-base">←</span><span>Model library</span></a><div class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-emerald-500"></span><span class="hidden text-[10px] font-semibold uppercase tracking-[.2em] text-slate-500 sm:inline">Interactive preview</span><span class="text-xs font-semibold text-slate-700 sm:hidden">Preview</span><button id="start-tour" type="button" class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-600 shadow-sm transition hover:border-cyan-300 hover:text-cyan-700"><span aria-hidden="true">💡</span><span class="hidden sm:inline">Take a tour</span></button></div></header><main class="grid min-h-[calc(100vh-3.5rem)] lg:grid-cols-[minmax(0,1fr)_320px]"><section class="relative min-h-[560px] overflow-hidden lg:min-h-[calc(100vh-3.5rem)]" id="stage"><div class="pointer-events-none absolute left-4 top-4 z-10 max-w-sm sm:left-6 sm:top-5"><div class="pointer-events-auto flex flex-wrap items-center gap-2"><div class="inline-flex items-center rounded-full border border-cyan-300/20 bg-slate-950/45 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.18em] text-cyan-200 shadow-lg backdrop-blur">{{ $item->category ?: '3D model' }}</div><span class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/45 px-2.5 py-1 text-[10px] text-slate-300 shadow-lg backdrop-blur" title="Views">◉ {{ number_format($viewCount) }}</span><button id="like-button" type="button" data-liked="{{ $liked ? '1' : '0' }}" class="inline-flex items-center gap-1 rounded-full border border-white/10 bg-slate-950/45 px-2.5 py-1 text-[10px] shadow-lg backdrop-blur transition {{ $liked ? 'text-rose-300 border-rose-300/30' : 'text-slate-300' }}"><span class="like-icon">{{ $liked ? '♥' : '♡' }}</span> <span class="like-count">{{ number_format($likeCount) }}</span></button></div><h1 class="mt-3 text-xl font-semibold tracking-tight text-white drop-shadow sm:text-2xl">{{ $item->name }}</h1><p class="mt-1 max-w-xs text-xs leading-5 text-slate-300">{{ $item->description ?: 'Explore every detail.' }}</p><p class="mt-2 text-[10px] text-slate-400">Click a part to select · drag to orbit · scroll to zoom · press <kbd class="rounded border border-slate-500/40 px-1">?</kbd> for shortcuts</p></div><div id="viewer-toolbar" class="absolute bottom-4 left-4 z-10 flex max-w-[calc(100%-2rem)] flex-wrap gap-1.5 sm:bottom-5 sm:left-6"><button id="reset" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Reset</button><button id="fullscreen" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Fullscreen</button><button id="share" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Share</button><button id="png" class="rounded-lg border border-cyan-300/30 bg-cyan-300/15 px-3 py-2 text-[11px] font-semibold text-cyan-100 shadow-lg backdrop-blur hover:bg-cyan-300/25">PNG</button><button id="jpeg" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">JPEG</button>@if($item->allow_download)<a href="{{ route('items.download', $item->slug) }}" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700">Download GLB</a>@endif<button id="shortcuts-help" type="button" class="compact-control rounded-lg px-3 py-2 text-[11px] font-medium text-slate-200 backdrop-blur hover:bg-slate-700" aria-label="Keyboard shortcuts">?</button></div></section><aside class="preview-sidebar flex max-h-[calc(100vh-3.5rem)] flex-col overflow-y-auto border-l p-4 sm:p-5"><div class="mb-4 flex items-start justify-between gap-3"><div><p class="text-[10px] font-bold uppercase tracking-[.2em] text-cyan-600">Configurator</p><h2 class="mt-1 text-lg font-semibold tracking-tight text-slate-900">Model controls</h2></div><span class="rounded-md bg-slate-100 px-2 py-1 text-[10px] font-semibold text-slate-500">GLB</span></div><div id="sidebar-tabs" class="mb-4 flex gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1"><button type="button" data-tab="parts" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-900 bg-white shadow-sm">Parts</button><button type="button" data-tab="materials" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-500">Materials</button><button type="button" data-tab="variants" class="sidebar-tab flex-1 rounded-lg px-2 py-2 text-xs font-semibold text-slate-500">Variants</button></div><div class="space-y-5"><div data-tab-panel="parts"><div><label class="mb-2 block text-xs font-semibold text-slate-700">Selected part</label><div id="parts" class="max-h-40 space-y-1 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-1.5"><p class="px-3 py-2 text-xs text-slate-500">Loading model…</p></div></div><div class="mt-4"><label for="color" class="mb-2 block text-xs font-semibold text-slate-700">Part color</label><div id="color-control" class="flex items-center gap-2"><input id="color" type="color" value="#22d3ee" class="h-9 w-10 cursor-pointer rounded-lg border border-slate-200 bg-white p-0.5"><button id="apply-color" class="flex-1 rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700">Apply color</button></div></div></div><div id="texture-panel-anchor" data-tab-panel="materials" class="hidden"></div><div id="variant-panel-anchor" data-tab-panel="variants" class="hidden"></div><div><div class="rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500"><div class="flex justify-between"><span>Format</span><span class="font-semibold text-slate-700">GLB</span></div><div class="mt-2 flex justify-between"><span>Parts found</span><span id="part-count" class="font-semibold text-slate-700">—</span></div></div></div></div><div class="mt-5 border-t border-slate-200 pt-4"><p class="text-[11px] leading-5 text-slate-500">Changes are rendered locally. Export the current view as PNG or JPEG.</p></div></aside></main>@include('items.related')<script type="module">
 import * as THREE from 'https://unpkg.com/three@0.176.0/build/three.module.js';
 import { OrbitControls } from 'https://unpkg.com/three@0.176.0/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'https://unpkg.com/three@0.176.0/examples/jsm/loaders/GLTFLoader.js';
@@ -19,6 +30,7 @@ function toggleShortcuts(show){ shortcutsModal.classList.toggle('hidden',!show);
 document.querySelector('#shortcuts-help').onclick=()=>toggleShortcuts(true);
 shortcutsModal.querySelector('.close-shortcuts').onclick=()=>toggleShortcuts(false);
 const viewerTools=document.createElement('div');
+viewerTools.id='viewer-tools';
 viewerTools.className='absolute right-4 top-4 z-20 flex max-w-[calc(100%-2rem)] flex-wrap justify-end gap-1.5';
 viewerTools.innerHTML='<button id="auto-rotate" class="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-slate-300 backdrop-blur hover:bg-white/10">Auto rotate</button><button id="isolate-part" class="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-slate-300 backdrop-blur hover:bg-white/10">Isolate selected</button><button id="explode-model" class="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-slate-300 backdrop-blur hover:bg-white/10">Explode view</button><button id="measure-model" class="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-slate-300 backdrop-blur hover:bg-white/10">Measure</button><button id="save-config" class="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-2 text-xs text-cyan-100 backdrop-blur hover:bg-white/10">Save configuration</button><button id="share-config" class="rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-slate-300 backdrop-blur hover:bg-white/10">Share configuration</button>';
 stage.append(viewerTools);
@@ -37,7 +49,7 @@ const scene = new THREE.Scene(); scene.background = new THREE.Color(0x111827);
 const loadingOverlay=document.createElement('div'); loadingOverlay.className='absolute inset-0 z-30 flex items-center justify-center bg-[#090b10]/90 backdrop-blur-sm'; loadingOverlay.innerHTML='<div class="w-64 text-center"><div class="mx-auto h-10 w-10 animate-spin rounded-full border-2 border-cyan-300/20 border-t-cyan-300"></div><p class="mt-4 text-sm text-slate-300">Loading 3D model<span id="loading-percent"></span>...</p><p class="mt-2 text-xs text-slate-500">Large models may take a moment.</p></div>'; stage.append(loadingOverlay);
 const loadingWatch=setInterval(()=>{ if(model){ loadingOverlay.remove(); clearInterval(loadingWatch); } },100);
 const camera = new THREE.PerspectiveCamera(42, 1, 0.01, 1000); camera.position.set(3, 2.2, 4.5);
-const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.xr.enabled=true; stage.appendChild(renderer.domElement); if('xr' in navigator){ navigator.xr.isSessionSupported('immersive-ar').then(supported=>{ if(supported){ const arButton=ARButton.createButton(renderer,{optionalFeatures:['local-floor']}); arButton.className='absolute bottom-6 right-6 z-20 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-xs text-cyan-100'; stage.append(arButton); } }).catch(()=>{}); } const selectionHelper = new THREE.BoxHelper(); selectionHelper.material.color.set(0x22d3ee); selectionHelper.material.depthTest = false; selectionHelper.material.depthWrite = false; selectionHelper.material.transparent = true; selectionHelper.material.opacity = .95; selectionHelper.renderOrder = 10; selectionHelper.visible = false; scene.add(selectionHelper);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.xr.enabled=true; stage.appendChild(renderer.domElement); if('xr' in navigator){ navigator.xr.isSessionSupported('immersive-ar').then(supported=>{ if(supported){ const arButton=ARButton.createButton(renderer,{optionalFeatures:['local-floor']}); arButton.id='ar-button'; arButton.className='absolute bottom-6 right-6 z-20 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-xs text-cyan-100'; stage.append(arButton); } }).catch(()=>{}); } const selectionHelper = new THREE.BoxHelper(); selectionHelper.material.color.set(0x22d3ee); selectionHelper.material.depthTest = false; selectionHelper.material.depthWrite = false; selectionHelper.material.transparent = true; selectionHelper.material.opacity = .95; selectionHelper.renderOrder = 10; selectionHelper.visible = false; scene.add(selectionHelper);
 const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.target.set(0, 0.7, 0);
 renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.12; renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 scene.add(new THREE.HemisphereLight(0xbfe7ff, 0x111827, 2.5)); const key = new THREE.DirectionalLight(0xffffff, 3); key.position.set(4, 6, 5); scene.add(key); const fill = new THREE.DirectionalLight(0x38bdf8, 1.2); fill.position.set(-4, 2, -4); scene.add(fill);
@@ -137,4 +149,137 @@ viewerTools.querySelector('#explode-model').onclick=event=>{ exploded=!exploded;
 viewerTools.querySelector('#save-config').onclick=saveConfiguration;
 viewerTools.querySelector('#share-config').onclick=shareConfiguration;
 document.querySelector("#fullscreen").onclick=()=>{ document.fullscreenElement ? document.exitFullscreen() : stage.requestFullscreen?.(); }; document.querySelector("#share").onclick=async()=>{ try { if(navigator.share){ await navigator.share({title:document.title,url:window.location.href}); } else { await navigator.clipboard.writeText(window.location.href); const button=document.querySelector("#share"); button.textContent="Link copied"; setTimeout(()=>button.textContent="Share",1800); } } catch(error) { if(error.name !== "AbortError") console.error(error); } }; function download(type){ const link=document.createElement('a'); link.download='{{ $item->slug }}.'+(type==='image/jpeg'?'jpg':'png'); link.href=renderer.domElement.toDataURL(type,.92); link.click(); } document.querySelector('#png').onclick=()=>download('image/png'); document.querySelector('#jpeg').onclick=()=>download('image/jpeg');
+</script><script src="https://unpkg.com/driver.js@1.8.0/dist/driver.js.iife.js"></script><script>
+// Guided tour of the configurator (parts, color, textures, variants, tools).
+// Waits for DOMContentLoaded so it runs after the deferred module script
+// above has built the materials/variants panels it needs to target.
+document.addEventListener('DOMContentLoaded', () => {
+    const switchTab = (name) => document.querySelector(`.sidebar-tab[data-tab="${name}"]`)?.click();
+
+    const steps = [
+        {
+            popover: {
+                title: 'Welcome to the 3D configurator',
+                description: 'Drag to orbit, scroll to zoom, and click any part of the model to select it. Here\'s a quick tour of everything you can do.',
+            },
+        },
+        {
+            element: '#parts',
+            popover: {
+                title: 'Select a part',
+                description: 'Every part of the model is listed here. Click one (or click it directly on the model) — whatever\'s selected is what color and texture changes apply to.',
+                side: 'left',
+            },
+        },
+        {
+            element: '#color-control',
+            popover: {
+                title: 'Change color',
+                description: 'Pick a color and hit "Apply color" to recolor the selected part instantly.',
+                side: 'left',
+            },
+        },
+        {
+            element: '#sidebar-tabs',
+            popover: {
+                title: 'Materials & variants',
+                description: 'Switch tabs to browse textures or pre-built variants for this model.',
+                side: 'bottom',
+            },
+        },
+        {
+            element: '#texture-library',
+            popover: {
+                title: 'Apply a texture',
+                description: 'Browse the texture library, click one to select it, then "Apply texture" to map it onto the selected part. Use the scale slider to adjust tiling, or "Clear" to remove it.',
+                side: 'left',
+            },
+            onHighlightStarted: () => switchTab('materials'),
+        },
+        {
+            element: '#variant-panel-anchor',
+            popover: {
+                title: 'Product variants',
+                description: 'If this model has pre-configured variants (e.g. different finishes), pick one from the list and apply it in a single click.',
+                side: 'left',
+            },
+            onHighlightStarted: () => switchTab('variants'),
+        },
+        {
+            element: '#viewer-tools',
+            popover: {
+                title: 'Viewer tools',
+                description: 'Auto-rotate the model, isolate the selected part, explode the view to see how parts fit together, measure distances, or save/share your current configuration as a link.',
+                side: 'left',
+            },
+            onHighlightStarted: () => switchTab('parts'),
+        },
+        {
+            element: '#viewer-toolbar',
+            popover: {
+                title: 'Reset & export',
+                description: 'Reset the camera, go fullscreen, share the page, export a PNG/JPEG snapshot, or download the source GLB file.',
+                side: 'top',
+            },
+        },
+        {
+            element: '.hotspot-marker',
+            popover: {
+                title: 'Hotspots',
+                description: 'Numbered markers on the model reveal extra details — click one to read more.',
+                side: 'top',
+            },
+        },
+        {
+            element: '#ar-button',
+            popover: {
+                title: 'View in AR',
+                description: 'On a supported phone or headset, place the model in your own space with augmented reality.',
+                side: 'top',
+            },
+        },
+        {
+            element: '#like-button',
+            popover: {
+                title: 'Like this model',
+                description: 'Found it useful? Give it a like.',
+                side: 'bottom',
+            },
+        },
+        {
+            element: '#shortcuts-help',
+            popover: {
+                title: 'Keyboard shortcuts',
+                description: 'Click here anytime to see the full list of keyboard shortcuts.',
+                side: 'top',
+            },
+        },
+        {
+            popover: {
+                title: "You're all set!",
+                description: 'Replay this tour anytime with the "Take a tour" button at the top of the page.',
+            },
+        },
+    ].filter((step) => !step.element || document.querySelector(step.element));
+
+    const tour = window.driver.js.driver({
+        showProgress: true,
+        allowClose: true,
+        overlayOpacity: 0.6,
+        nextBtnText: 'Next',
+        prevBtnText: 'Back',
+        doneBtnText: 'Done',
+        progressText: '@{{current}} of @{{total}}',
+        steps,
+        onDestroyed: () => { try { localStorage.setItem('model-viewer-tour-completed', '1'); } catch (e) {} },
+    });
+
+    document.querySelector('#start-tour')?.addEventListener('click', () => tour.drive());
+
+    let alreadySeen = false;
+    try { alreadySeen = localStorage.getItem('model-viewer-tour-completed') === '1'; } catch (e) {}
+    if (!alreadySeen && steps.length > 0) {
+        window.setTimeout(() => tour.drive(), 600);
+    }
+});
 </script></body></html>

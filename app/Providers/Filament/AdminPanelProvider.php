@@ -13,6 +13,7 @@ use App\Http\Middleware\SetLocale;
 use App\Models\Setting;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -21,7 +22,10 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Pages\Auth\PasswordReset\RequestPasswordReset;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentAsset;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,6 +34,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -51,6 +56,21 @@ class AdminPanelProvider extends PanelProvider
         'purple' => ['label' => 'Purple',     'color' => 'purple'],
         'pink' => ['label' => 'Pink',       'color' => 'pink'],
     ];
+
+    // Wrapped in try/catch: like Setting::get() above, this boots on every
+    // artisan command, including a fresh install before `npm run build` has
+    // ever produced a manifest for Vite::asset() to read.
+    public function boot(): void
+    {
+        try {
+            FilamentAsset::register([
+                Css::make('admin-tour', Vite::asset('resources/css/filament/tour.css')),
+                Js::make('admin-tour', Vite::asset('resources/js/filament/tour.js'))->module(),
+            ], package: 'app/admin-tour');
+        } catch (\Throwable) {
+            //
+        }
+    }
 
     public function panel(Panel $panel): Panel
     {
@@ -133,6 +153,14 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn () => view('components.language-switcher'),
+            )
+            ->renderHook(
+                PanelsRenderHook::TOPBAR_END,
+                fn () => view('components.admin-tour-trigger'),
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn () => self::resolveAdminTourBootstrap(),
             )
             ->authMiddleware([
                 Authenticate::class,
@@ -339,6 +367,45 @@ CSS;
         }
 
         return view('components.google-auth-button');
+    }
+
+    // Bootstraps the driver.js product tour (see resources/js/filament/tour.js)
+    // with a per-user "already seen it" flag, so it only auto-starts once,
+    // plus the strings/routes it needs — kept out of the JS bundle so it can
+    // be translated per-locale and stay guest-safe (returns '' when logged out).
+    protected static function resolveAdminTourBootstrap(): string
+    {
+        $user = Filament::auth()->user();
+
+        if (! $user) {
+            return '';
+        }
+
+        $config = [
+            'autoStart' => blank($user->tour_completed_at),
+            'completeUrl' => route('admin.tour.complete'),
+            'csrfToken' => csrf_token(),
+            'strings' => [
+                'welcomeTitle' => __('Welcome to the admin panel'),
+                'welcomeDescription' => __('Take a quick tour to see where everything lives — it only takes a minute.'),
+                'navTitle' => __('Navigation'),
+                'navDescription' => __('Everything you manage lives behind one of these links, grouped by section.'),
+                'searchTitle' => __('Global search'),
+                'searchDescription' => __('Search across every resource in the panel from anywhere.'),
+                'notificationsTitle' => __('Notifications'),
+                'notificationsDescription' => __('New activity and alerts show up here.'),
+                'profileTitle' => __('Your profile'),
+                'profileDescription' => __('Update your account, switch theme or language, or sign out from here.'),
+                'doneTitle' => __("You're all set!"),
+                'doneDescription' => __('You can replay this tour anytime from the "Take a tour" button in the topbar.'),
+                'next' => __('Next'),
+                'previous' => __('Back'),
+                'done' => __('Done'),
+                'progress' => __('{{current}} of {{total}}'),
+            ],
+        ];
+
+        return '<script>window.__adminTour = '.json_encode($config, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP).';</script>';
     }
 
     protected static function resolveBrandLogoUrl(): ?string
