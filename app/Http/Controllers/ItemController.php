@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Setting;
 use App\Models\Texture;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -107,6 +108,8 @@ class ItemController extends Controller
             'viewCount' => $item->view_count,
             'likeCount' => $item->likes()->count(),
             'liked' => $item->isLikedByVisitor(\App\Services\ItemAnalyticsService::visitorHash($request)),
+            'tourEnabled' => (bool) Setting::get('model_viewer_tour_enabled', true),
+            'tourFrequency' => Setting::get('model_viewer_tour_frequency', 'once'),
         ]);
     }
 

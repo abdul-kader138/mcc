@@ -61,6 +61,8 @@ class SystemSettings extends Page implements HasForms
             'mail_active_vendor' => Setting::get('mail_active_vendor', 'smtp'),
             'mail_vendors' => $this->getMailVendors(),
             'staff_notification_email' => Setting::get('staff_notification_email', ''),
+            'model_viewer_tour_enabled' => Setting::get('model_viewer_tour_enabled', true),
+            'model_viewer_tour_frequency' => Setting::get('model_viewer_tour_frequency', 'once'),
         ]);
     }
 
@@ -128,13 +130,26 @@ class SystemSettings extends Page implements HasForms
                         ])->defaultItems(1)->itemLabel(fn (array $state): ?string => $state['label'] ?? $state['key'] ?? null)->collapsible()->reorderable(false)->required(),
                     ]),
                 ]),
+                Tab::make(__('Model Viewer'))->icon('heroicon-o-cube')->schema([
+                    Section::make(__('Guided Tour'))->description(__('Controls the walkthrough shown on the public 3D model preview page (parts, color, textures, variants, and tools).'))->schema([
+                        Toggle::make('model_viewer_tour_enabled')->label(__('Enable the guided tour'))->default(true)->live(),
+                        Radio::make('model_viewer_tour_frequency')
+                            ->label(__('Auto-start frequency'))
+                            ->options([
+                                'once' => __('Once per browser — only the first time a visitor opens a model'),
+                                'always' => __('Every visit — auto-start again on every page load/reload'),
+                            ])
+                            ->default('once')
+                            ->visible(fn ($get) => (bool) $get('model_viewer_tour_enabled')),
+                    ]),
+                ]),
             ])->persistTabInQueryString('tab'),
         ]);
     }
 
     public function save(): void
     {
-        $groups = ['app_name' => 'general', 'app_tagline' => 'general', 'default_locale' => 'general', 'admin_theme' => 'appearance', 'admin_panel_theme_mode' => 'appearance', 'app_logo' => 'appearance', 'app_icon' => 'appearance', 'favicon' => 'appearance', 'two_factor_enabled' => 'security', 'google_client_id' => 'security', 'google_client_secret' => 'security', 'mail_from_name' => 'email', 'mail_from_address' => 'email', 'mail_active_vendor' => 'email', 'mail_vendors' => 'email', 'staff_notification_email' => 'email'];
+        $groups = ['app_name' => 'general', 'app_tagline' => 'general', 'default_locale' => 'general', 'admin_theme' => 'appearance', 'admin_panel_theme_mode' => 'appearance', 'app_logo' => 'appearance', 'app_icon' => 'appearance', 'favicon' => 'appearance', 'two_factor_enabled' => 'security', 'google_client_id' => 'security', 'google_client_secret' => 'security', 'mail_from_name' => 'email', 'mail_from_address' => 'email', 'mail_active_vendor' => 'email', 'mail_vendors' => 'email', 'staff_notification_email' => 'email', 'model_viewer_tour_enabled' => 'model_viewer', 'model_viewer_tour_frequency' => 'model_viewer'];
         foreach ($this->form->getState() as $key => $value) Setting::set($key, $value ?? '', $groups[$key] ?? 'general');
         Notification::make()->success()->title(__('Settings saved'))->send();
     }
