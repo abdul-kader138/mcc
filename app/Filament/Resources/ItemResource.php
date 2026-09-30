@@ -48,6 +48,21 @@ class ItemResource extends Resource
                 Toggle::make('is_featured')->label(__('Featured item'))->helperText(__('Featured items appear first in the public gallery.')),
                 Toggle::make('allow_download')->label(__('Allow model download'))->helperText(__('Lets visitors download the original .glb file from the public preview.')),
             ])->columns(2),
+            Section::make(__('Camera settings'))
+                ->description(__('Optional. Overrides the default camera for the public 3D viewer. Leave blank to auto-fit the model.'))
+                ->collapsible()
+                ->collapsed(fn (?Item $record) => blank($record?->camera_settings))
+                ->schema([
+                    TextInput::make('camera_settings.position.x')->label(__('Position X'))->numeric()->default(3),
+                    TextInput::make('camera_settings.position.y')->label(__('Position Y'))->numeric()->default(2.2),
+                    TextInput::make('camera_settings.position.z')->label(__('Position Z'))->numeric()->default(4.5),
+                    TextInput::make('camera_settings.target.x')->label(__('Target X'))->numeric()->default(0),
+                    TextInput::make('camera_settings.target.y')->label(__('Target Y'))->numeric()->default(0.7),
+                    TextInput::make('camera_settings.target.z')->label(__('Target Z'))->numeric()->default(0),
+                    TextInput::make('camera_settings.vertical_fov_degrees')->label(__('Vertical FOV (degrees)'))->numeric()->default(42),
+                    TextInput::make('camera_settings.near')->label(__('Near plane'))->numeric()->step(0.01)->default(0.01),
+                    TextInput::make('camera_settings.far')->label(__('Far plane'))->numeric()->default(1000),
+                ])->columns(3),
         ]);
     }
 

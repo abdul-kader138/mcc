@@ -77,6 +77,7 @@ class ItemController extends Controller
         return view('items.show', [
             'item' => $item,
             'relatedItems' => $relatedItems,
+            'cameraSettings' => $item->camera_settings,
             'hotspots' => $item->hotspots->map(fn ($hotspot): array => [
                 'title' => $hotspot->title,
                 'description' => $hotspot->description,

@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
-#[Fillable(['user_id', 'name', 'slug', 'description', 'category', 'tags', 'image_path', 'model_path', 'is_published', 'is_featured', 'allow_download'])]
+#[Fillable(['user_id', 'name', 'slug', 'description', 'category', 'tags', 'image_path', 'model_path', 'camera_settings', 'is_published', 'is_featured', 'allow_download'])]
 class Item extends \Illuminate\Database\Eloquent\Model
 {
     protected function casts(): array
     {
-        return ['tags' => 'array', 'is_published' => 'boolean', 'is_featured' => 'boolean', 'allow_download' => 'boolean', 'model_validation_messages' => 'array'];
+        return ['tags' => 'array', 'camera_settings' => 'array', 'is_published' => 'boolean', 'is_featured' => 'boolean', 'allow_download' => 'boolean', 'model_validation_messages' => 'array'];
     }
     public function user(): BelongsTo
     {
