@@ -22,3 +22,4 @@ yarn-error.log
 /.zed
 /.phpunit.result.cache
 /beta
+*.glb
