@@ -120,4 +120,24 @@ class ItemController extends Controller
 
         return Storage::disk('public')->download($item->model_path, $item->slug.'.glb');
     }
+
+    public function updateCameraSettings(Request $request, Item $item): \Illuminate\Http\JsonResponse
+    {
+        $data = $request->validate([
+            'position.x' => ['required', 'numeric'],
+            'position.y' => ['required', 'numeric'],
+            'position.z' => ['required', 'numeric'],
+            'target.x' => ['required', 'numeric'],
+            'target.y' => ['required', 'numeric'],
+            'target.z' => ['required', 'numeric'],
+            'vertical_fov_degrees' => ['required', 'numeric', 'min:1', 'max:170'],
+            'near' => ['required', 'numeric', 'min:0.001'],
+            'far' => ['required', 'numeric', 'gt:near'],
+        ]);
+
+        $item->camera_settings = $data;
+        $item->save();
+
+        return response()->json(['saved' => true]);
+    }
 }

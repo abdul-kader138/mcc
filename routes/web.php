@@ -19,6 +19,7 @@ Route::post('/models/{item:slug}/like', [ItemLikeController::class, 'toggle'])->
 Route::post('/models/{item:slug}/configurations', [ModelConfigurationController::class, 'store'])->middleware('throttle:20,1')->name('items.configurations.store');
 Route::get('/models/{item:slug}/configurations/{configuration:token}', [ModelConfigurationController::class, 'show'])->name('items.configurations.show');
 Route::post('/models/{item:slug}/quote-requests', [QuoteRequestController::class, 'store'])->middleware('throttle:5,1')->name('items.quote-requests.store');
+Route::post('/models/{item:slug}/camera-settings', [ItemController::class, 'updateCameraSettings'])->middleware(['auth', 'throttle:20,1'])->name('items.camera-settings.update');
 
 // Staff (panel) email verification. No auth middleware on purpose — the
 // `signed` middleware secures it — so the link works when opened on a

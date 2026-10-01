@@ -47,6 +47,10 @@ class ItemResource extends Resource
                 Toggle::make('is_published')->label(__('Visible on public gallery'))->default(false),
                 Toggle::make('is_featured')->label(__('Featured item'))->helperText(__('Featured items appear first in the public gallery.')),
                 Toggle::make('allow_download')->label(__('Allow model download'))->helperText(__('Lets visitors download the original .glb file from the public preview.')),
+                Toggle::make('auto_rotate_enabled')->label(__('Auto-rotate model'))->helperText(__('The model spins automatically when the public preview loads. Visitors can still toggle it manually.')),
+                Toggle::make('manual_rotate_enabled')->label(__('Allow manual rotation'))->default(true)->helperText(__('Lets visitors drag the model to rotate it. Turn off to lock the camera to a fixed angle.')),
+                Toggle::make('zoom_enabled')->label(__('Allow zoom'))->default(true)->helperText(__('Lets visitors scroll or pinch to zoom in and out. Turn off to lock the camera distance.')),
+                Toggle::make('pan_enabled')->label(__('Allow panning'))->default(true)->helperText(__('Lets visitors right-click/two-finger drag to pan the camera sideways. Turn off to keep the model centered.')),
             ])->columns(2),
             Section::make(__('Camera settings'))
                 ->description(__('Optional. Overrides the default camera for the public 3D viewer. Leave blank to auto-fit the model.'))
