@@ -41,7 +41,7 @@ class ItemVariantResource extends Resource
                 ->label(__('Appearance preset JSON'))
                 ->rows(8)
                 ->rules(['nullable', 'json'])
-                ->helperText(__('Optional JSON mapping mesh indexes to colors/textures. Example: {\"parts\":{\"0\":{\"color\":\"#111827\"}}}'))
+                ->helperText(__('Optional JSON mapping stable mesh IDs to colors/textures. Use the IDs shown in the public viewer; numeric indexes remain supported for older models. Example: {\"parts\":{\"chair-seat\":{\"color\":\"#111827\"}}}'))
                 ->columnSpanFull(),
             Checkbox::make('is_default')->label(__('Default variant')),
             TextInput::make('sort_order')->label(__('Display order'))->numeric()->integer()->default(0),
